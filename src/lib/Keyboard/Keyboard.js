@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-//import logo from './logo.svg';
-import './App.css';
+import Note from '../Note';
 
 /* Modify these properties to change the appearance of the keyboard */
 const keyboardProps = {
@@ -17,48 +16,13 @@ const keyboardProps = {
 /* Properties for white and black keys are calculated based on the keyboardProps */
 const whiteKeyProps = {
   width: keyboardProps.width / keyboardProps.numWhiteKeys,
-  height: keyboardProps.height,
-  names: ["C", "D", "E", "F", "G", "A", "B"]
+  height: keyboardProps.height
 };
 
 const blackKeyProps = {
   width: whiteKeyProps.width * keyboardProps.blackKeyWidthRatio,
-  height: whiteKeyProps.height * keyboardProps.blackKeyHeightRatio,
-  names: ["C#", "D#", null, "F#", "G#", "A#", null]
+  height: whiteKeyProps.height * keyboardProps.blackKeyHeightRatio
 };
-
-const notesSequence = [
-  ["F"],
-  ["G, B, D"],
-  ["F#"]
-];
-
-class Note {
-  constructor(noteName, octave) {
-    // make sure input is valid; otherwise throw an error
-    const validNotes = whiteKeyProps.names.concat(blackKeyProps.names);
-    if (!validNotes.includes(noteName)) {
-      throw new Error(
-        "Note name \"" + noteName + "\" is invalid. Valid note names are: " + validNotes);
-    }
-    if (octave < 0) {
-      throw new Error("Attempt to create a note in octave " + octave + ". " +
-                      "Octave cannot be negative.");
-    }
-
-    // initialize the note
-    this.noteName = noteName;
-    this.octave = octave;
-  }
-}
-
-function Notation(props) {
-  return (
-    <div className="notation">
-      <p>{props.notes}</p>
-    </div>
-  );
-}
 
 class Keyboard extends Component {
   constructor() {
@@ -87,7 +51,7 @@ class Keyboard extends Component {
       );
       this.whiteNotes.push(
         new Note(
-          whiteKeyProps.names[(i + keyboardProps.firstKey) % 7], // note name
+          Note.whiteNoteNames()[(i + keyboardProps.firstKey) % 7], // note name
           keyboardProps.firstOctave + Math.floor((i + keyboardProps.firstKey) / 7) // note octave
         )
       );
@@ -110,7 +74,7 @@ class Keyboard extends Component {
         );
         this.blackNotes.push(
           new Note(
-            blackKeyProps.names[(i + keyboardProps.firstKey) % 7], // note name
+            Note.blackNoteNames()[(i + keyboardProps.firstKey) % 7], // note name
             keyboardProps.firstOctave + Math.floor((i + keyboardProps.firstKey) / 7) // note octave
           )
         );
@@ -138,7 +102,7 @@ class Keyboard extends Component {
     // Highlight keys corresponding to the notes in props.highlightedNotes
     for (var i = 0; i < this.props.highlightedNotes.length; i++) {
       const note = this.props.highlightedNotes[i];
-      if (whiteKeyProps.names.includes(note.noteName)) {
+      if (Note.whiteNoteNames().includes(note.noteName)) {
         // this highlighted key is white
         const index = this.whiteNotes.indexOf(note);
         whiteKeys[index] = (
@@ -201,56 +165,4 @@ function Key(props) {
   )
 }
 
-function NextButton(props) {
-  return (
-    <button
-      className="next-button"
-      onClick={props.onClick}>
-      Next &#8594;
-    </button>
-  );
-}
-
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      currentNotesIndex: 0,
-      highlightedNotes: []
-    };
-  }
-
-  notePlayed(note) {
-    console.log("Played " + note.noteName + note.octave);
-
-    const highlightedNotes = this.state.highlightedNotes.slice();
-    highlightedNotes.push(note);
-    this.setState({
-      highlightedNotes: highlightedNotes
-    });
-  }
-
-  nextNotes() {
-    console.log("next notes")
-    const index = this.state.currentNotesIndex + 1;
-    this.setState({currentNotesIndex: index});
-
-    this.setState({highlightedNotes: []});
-  }
-
-  render() {
-    return (
-      <div>
-        <h1>Notation Test</h1>
-        <Notation notes={notesSequence[this.state.currentNotesIndex]}/>
-        <Keyboard
-          notePlayed={(note) => this.notePlayed(note)}
-          highlightedNotes={this.state.highlightedNotes} />
-        <NextButton
-          onClick={() => this.nextNotes()} />
-      </div>
-    );
-  }
-}
-
-export default App;
+export default Keyboard;
