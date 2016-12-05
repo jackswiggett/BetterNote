@@ -42,7 +42,7 @@ class Note {
     this.state = state;
   }
 
-  description() {
+  describe() {
     var symbol;
     switch (this.state) {
       case "sharp":
@@ -74,6 +74,10 @@ class Note {
 class Chord {
   constructor(notes) {
     this.notes = notes;
+  }
+
+  describe() {
+    return this.notes.map((note) => note.describe()).join(" ");
   }
 }
 

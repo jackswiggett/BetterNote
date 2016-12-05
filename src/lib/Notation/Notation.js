@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-  renderTraditional
+  renderTraditional,
+  renderKlavar
 } from './renderers';
 import './Notation.css';
 
@@ -17,7 +18,21 @@ class Notation extends Component {
   }
 
   renderNotes() {
-    renderTraditional(this.props.chord, this.documentElement);
+    var renderFunc;
+
+    switch (this.props.renderer) {
+      case "traditional":
+        renderFunc = renderTraditional;
+        break;
+      case "klavar":
+        renderFunc = renderKlavar;
+        break;
+      default:
+        break;
+    }
+
+    console.log("Rendering chord: " + this.props.chord.describe());
+    renderFunc(this.props.chord, this.documentElement);
   }
 
   componentDidMount() {

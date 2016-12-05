@@ -42,7 +42,7 @@ class App extends Component {
   }
 
   notePlayed(note) {
-    console.log("Played " + note.description());
+    console.log("Played " + note.describe());
 
     const highlightedNotes = this.state.highlightedNotes.slice();
     highlightedNotes.push(note);
