@@ -7,7 +7,8 @@
   },
   "dependencies": {
     "react": "^15.4.1",
-    "react-dom": "^15.4.1"
+    "react-dom": "^15.4.1",
+    "vexflow": "^1.2.83"
   },
   "scripts": {
     "start": "react-scripts start",

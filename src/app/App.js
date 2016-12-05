@@ -1,15 +1,25 @@
 import React, { Component } from 'react';
-import './App.css';
 import {
   Keyboard,
   Notation,
-  Note
+  Note,
+  Chord
 } from '../lib';
 
-const notesSequence = [
-  ["F"],
-  ["G, B, D"],
-  ["F#"]
+const chordSequence = [
+  new Chord([
+    new Note("E", 4, "flat"),
+    new Note("F", 4),
+    new Note("G", 4, "flat")
+  ]),
+  new Chord([
+    new Note("C", 4),
+    new Note("F", 4),
+    new Note("A", 4)
+  ]),
+  new Chord([
+    new Note("G", 4)
+  ]),
 ];
 
 function NextButton(props) {
@@ -26,13 +36,13 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      currentNotesIndex: 0,
+      currentChordIndex: 0,
       highlightedNotes: []
     };
   }
 
   notePlayed(note) {
-    console.log("Played " + note.noteName + note.octave);
+    console.log("Played " + note.description());
 
     const highlightedNotes = this.state.highlightedNotes.slice();
     highlightedNotes.push(note);
@@ -41,11 +51,11 @@ class App extends Component {
     });
   }
 
-  nextNotes() {
-    console.log("next notes")
-    const index = this.state.currentNotesIndex + 1;
+  nextChord() {
+    console.log("Next chord")
+    const index = this.state.currentChordIndex + 1;
     this.setState({
-      currentNotesIndex: index,
+      currentChordIndex: index,
       highlightedNotes: []
     });
   }
@@ -53,13 +63,16 @@ class App extends Component {
   render() {
     return (
       <div>
-        <h1>Notation Test</h1>
-        <Notation notes={notesSequence[this.state.currentNotesIndex]}/>
+        <Notation
+          width={400}
+          height={300}
+          chord={chordSequence[this.state.currentChordIndex]}
+          renderer="klavar" />
         <Keyboard
           notePlayed={(note) => this.notePlayed(note)}
           highlightedNotes={this.state.highlightedNotes} />
         <NextButton
-          onClick={() => this.nextNotes()} />
+          onClick={() => this.nextChord()} />
       </div>
     );
   }

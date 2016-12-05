@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Note from '../Note';
+import { Note } from '../Note';
 
 /* Modify these properties to change the appearance of the keyboard */
 const keyboardProps = {
@@ -51,8 +51,10 @@ class Keyboard extends Component {
       );
       this.whiteNotes.push(
         new Note(
-          Note.whiteNoteNames()[(i + keyboardProps.firstKey) % 7], // note name
-          keyboardProps.firstOctave + Math.floor((i + keyboardProps.firstKey) / 7) // note octave
+          Note.noteName((i + keyboardProps.firstKey) % Note.numNoteNames()), // name
+          keyboardProps.firstOctave +
+            Math.floor((i + keyboardProps.firstKey) / Note.numNoteNames()), // octave
+          "natural" // state
         )
       );
     }
@@ -62,8 +64,8 @@ class Keyboard extends Component {
     this.blackNotes = [];
     const blackKeyOffset = whiteKeyProps.width - blackKeyProps.width / 2;
     for (let i = 0; i < keyboardProps.numWhiteKeys - 1; i++) {
-      const indices = [0, 1, 3, 4, 5]; // indices of white keys after which there should be a black key
-      if (indices.includes((i + keyboardProps.firstKey) % 7)) {
+      //const indices = [0, 1, 3, 4, 5]; // indices of white keys after which there should be a black key
+      if (Note.hasSharp((i + keyboardProps.firstKey) % Note.numNoteNames())) {
         this.blackKeys.push(
           <Key
             type="black-key"
@@ -74,8 +76,10 @@ class Keyboard extends Component {
         );
         this.blackNotes.push(
           new Note(
-            Note.blackNoteNames()[(i + keyboardProps.firstKey) % 7], // note name
-            keyboardProps.firstOctave + Math.floor((i + keyboardProps.firstKey) / 7) // note octave
+            Note.noteName((i + keyboardProps.firstKey) % Note.numNoteNames()), // name
+            keyboardProps.firstOctave +
+              Math.floor((i + keyboardProps.firstKey) / Note.numNoteNames()), // octave
+            "sharp" // state
           )
         );
       } else {
@@ -102,7 +106,7 @@ class Keyboard extends Component {
     // Highlight keys corresponding to the notes in props.highlightedNotes
     for (var i = 0; i < this.props.highlightedNotes.length; i++) {
       const note = this.props.highlightedNotes[i];
-      if (Note.whiteNoteNames().includes(note.noteName)) {
+      if (note.state === "natural") {
         // this highlighted key is white
         const index = this.whiteNotes.indexOf(note);
         whiteKeys[index] = (

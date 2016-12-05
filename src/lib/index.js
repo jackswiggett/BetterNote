@@ -1,9 +1,13 @@
 import Keyboard from './Keyboard';
 import Notation from './Notation';
-import Note from './Note';
+import {
+  Note,
+  Chord
+} from './Note';
 
 export {
-    Keyboard,
-    Notation,
-    Note
+  Keyboard,
+  Notation,
+  Note,
+  Chord
 };
