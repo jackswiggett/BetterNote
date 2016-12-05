@@ -1,20 +1,22 @@
 {
   "name": "notation-test",
-  "version": "0.1.0",
-  "private": true,
-  "devDependencies": {
-    "react-scripts": "0.8.0"
-  },
-  "dependencies": {
-    "fabric": "^1.7.1",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
-    "vexflow": "^1.2.83"
-  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node app.js",
+    "client": "node start-client.js"
+  },
+  "author": "Jack Swiggett <jackswiggett@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "mongodb": "^2.2.12"
+  },
+  "devDependencies": {
+    "concurrently": "^3.1.0"
   }
 }
