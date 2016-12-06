@@ -42,6 +42,34 @@ class Note {
     this.state = state;
   }
 
+  standardized() {
+    /* Returns a copy of this note. If this note is a flat, the copy will be the equivalent
+     * note, represented as a sharp. */
+    const copy = new Note(this.noteName, this.octave, this.state);
+    if (copy.state === "flat") {
+      const name = copy.noteName;
+      copy.noteName = noteNames[noteNames.indexOf(name) - 1];
+      copy.state = "sharp";
+    }
+
+    return copy;
+  }
+
+  equals(note, checkOctave=false) {
+    /* Returns true if this note is equivalent to the other note, ignoring whether it is
+     * represented as a sharp or as a flat (i.e. C# = Db). Returns false otherwise. */
+    // convert both to sharps
+    const thisNote = this.standardized();
+    const otherNote = note.standardized();
+
+    if (checkOctave && thisNote.octave !== otherNote.octave) {
+      return false;
+    }
+
+    return (thisNote.noteName === otherNote.noteName &&
+            thisNote.state === otherNote.state);
+  }
+
   describe() {
     var symbol;
     switch (this.state) {
