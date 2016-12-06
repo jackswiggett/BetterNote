@@ -48,7 +48,6 @@ app.get('/api/test-logs', function (req, res) {
       });
     } else {
       console.log("Found " + logs.length + " test logs.");
-      console.log(logs);
       res.status(200).send(logs);
     }
   });
@@ -56,6 +55,7 @@ app.get('/api/test-logs', function (req, res) {
 
 app.post('/api/test-logs', function (req, res) {
   const collection = db.collection("test-logs");
+  console.log(req.body);
   collection.insertOne(req.body, function (err, result) {
     if (err) {
       console.log(err);
@@ -63,7 +63,8 @@ app.post('/api/test-logs', function (req, res) {
         error: "Unable to insert test log into database."
       });
     } else {
-      console.log("Saved new test log.");
+      console.log("Saved new test log:");
+      console.log(req.body);
       res.status(201).end("Test log successfully saved in database.");
     }
   });

@@ -10,3 +10,16 @@
   display: block;
   margin: 20px auto;
 }
+
+.test-log-saved-success,
+.test-log-saved-failure {
+  margin: 20px auto;
+}
+
+.test-log-saved-success {
+  color: green;
+}
+
+.test-log-saved-failure {
+  color: red;
+}

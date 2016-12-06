@@ -4,7 +4,6 @@ import {
   Notation
 } from '..';
 import './Test.css';
-import $ from 'jquery';
 
 function NextButton(props) {
   return (
@@ -110,6 +109,9 @@ class Test extends Component {
    *   testCompleted: A function to be called when the test if finished.
    *                  Takes one parameter, an object storing log data
    *                  for the completed test
+   *   maxDuration: Once this duration (in seconds) has elapsed, the test
+   *                will exit with "Next" is pressed, regardless of whether
+   *                the tester has finished identifying all the chords
    */
   constructor() {
     super();
@@ -132,7 +134,8 @@ class Test extends Component {
     this.testLog = new TestLog(this.state.testerName);
     this.setState({
       testStarted: true,
-      canPlayNotes: true
+      canPlayNotes: true,
+      startTime: performance.now()
     });
 
     this.chordStartTime = performance.now();
@@ -166,7 +169,9 @@ class Test extends Component {
       this.testLog.logChord(correctChord, playedNotes, this.chordElapsedTime);
 
       const index = this.state.currentChordIndex + 1;
-      if (index === this.props.chordSequence.length) {
+      const totalTestingTime = (performance.now() - this.state.startTime) / 1000;
+      if (index === this.props.chordSequence.length ||
+          totalTestingTime > this.props.maxDuration) {
         // done with the test; send test log to parent component
         this.props.testCompleted(this.testLog.getData());
       } else {
