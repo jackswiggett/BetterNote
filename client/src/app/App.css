@@ -1,0 +1,12 @@
+#notation-selector,
+#sequence-selector
+{
+  display: inline;
+  margin: 5px;
+  font-size: 16px;
+}
+
+.test-selector-button {
+  display: block;
+  margin: 20px auto;
+}

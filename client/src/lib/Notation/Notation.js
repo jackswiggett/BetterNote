@@ -31,7 +31,6 @@ class Notation extends Component {
         break;
     }
 
-    console.log("Rendering chord: " + this.props.chord.describe());
     renderFunc(this.props.chord, this.documentElement);
   }
 

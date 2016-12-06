@@ -1,0 +1,18 @@
+.test-start-page {
+  margin: 30px auto;
+  font-size: 22px;
+}
+
+.notation-placeholder {
+  padding-top: 40px;
+}
+
+.tester-name {
+  margin: 15px;
+}
+
+#tester-name-input {
+  font-size: inherit;
+  margin: 5px;
+  text-align: center;
+}

@@ -3,12 +3,15 @@ import {
   Keyboard,
   Notation
 } from '..';
+import './Test.css';
+import $ from 'jquery';
 
 function NextButton(props) {
   return (
     <button
-      className="next-button"
-      onClick={props.onClick}>
+      className="button next-button"
+      onClick={props.onClick}
+      disabled={props.disabled && "disabled"}>
       Next &#8594;
     </button>
   );
@@ -17,16 +20,20 @@ function NextButton(props) {
 function StartButton(props) {
   return (
     <button
-      className="start-button"
-      onClick={props.onClick}>
-      Start
+      className="button start-button"
+      onClick={props.onClick}
+      disabled={props.disabled && "disabled"}>
+      Begin Test
     </button>
   );
 }
 
 class TestLog {
-  constructor() {
+  constructor(testerName) {
+    const date = new Date();
     this.sequence = [];
+    this.startTime = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+    this.testerName = testerName;
   }
 
   logChord(chord, played, elapsedTime) {
@@ -53,13 +60,45 @@ class TestLog {
       numCorrectNotesPlayed: numCorrectNotesPlayed,
       elapsedTime: elapsedTime,
       totalElapsedTime: totalElapsedTime
-    }
+    };
 
     this.sequence.push(data);
   }
 
   getData() {
-    return this.sequence;
+    const date = new Date();
+    return {
+      testerName: this.testerName,
+      sequence: this.sequence,
+      startTime: this.startTime,
+      endTime: date.toLocaleDateString() + " " + date.toLocaleTimeString()
+    };
+  }
+}
+
+class StartPage extends Component {
+  render() {
+    const style = {
+      width: this.props.width,
+      height: this.props.height
+    };
+
+    return (
+      <div className="test-start-page" style={style}>
+        <div className="tester-name">
+          Name of tester:
+          <input
+            id="tester-name-input"
+            type="text"
+            value={this.props.testerName}
+            onChange={this.props.onChange} />
+        </div>
+        <div className="notation-placeholder">
+          Music notation will appear here <br/>
+          when you click "Begin Test"
+        </div>
+      </div>
+    );
   }
 }
 
@@ -78,12 +117,19 @@ class Test extends Component {
       currentChordIndex: 0,
       highlightedNotes: [],
       canPlayNotes: false,
-      testStarted: false
+      testStarted: false,
+      testerName: ""
     };
-    this.testLog = new TestLog();
+  }
+
+  testerNameChanged(event) {
+    this.setState({
+      testerName: event.target.value
+    });
   }
 
   startTest() {
+    this.testLog = new TestLog(this.state.testerName);
     this.setState({
       testStarted: true,
       canPlayNotes: true
@@ -141,20 +187,31 @@ class Test extends Component {
   render() {
     return (
       <div>
-        {this.state.testStarted &&
+        {
+        this.state.testStarted ?
           <Notation
             width={400}
             height={300}
             chord={this.props.chordSequence[this.state.currentChordIndex]}
-            renderer={this.props.notationRenderer} />}
+            renderer={this.props.notationRenderer} /> :
+          <StartPage
+            width={400}
+            height={300}
+            testerName={this.props.testerName}
+            onChange={(event) => this.testerNameChanged(event)} />
+        }
         <Keyboard
           notePlayed={(note) => this.notePlayed(note)}
           highlightedNotes={this.state.highlightedNotes} />
-        {this.state.testStarted ?
+        {
+        this.state.testStarted ?
           <NextButton
-            onClick={() => this.nextChord()} /> :
+            onClick={() => this.nextChord()}
+            disabled={this.state.canPlayNotes} /> :
           <StartButton
-            onClick={() => this.startTest()} />}
+            onClick={() => this.startTest()}
+            disabled={!this.state.testerName} />
+        }
       </div>
     );
   }

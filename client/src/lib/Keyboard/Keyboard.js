@@ -3,8 +3,8 @@ import { Note } from '../Note';
 
 /* Modify these properties to change the appearance of the keyboard */
 const keyboardProps = {
-  width: 700, // total keyboard width, in pixels
-  height: 150, // total keyboard height, in pixels
+  width: 900, // total keyboard width, in pixels
+  height: 200, // total keyboard height, in pixels
   numWhiteKeys: 14, // 14 white keys = two full octaves
   firstKey: 0, // index of first white key on the left of the keyboard; 0 = C, 1 = D, etc.
   firstOctave: 4, // index of the octave on the piano that the first white key belongs to

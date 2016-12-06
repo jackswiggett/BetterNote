@@ -28,8 +28,7 @@ body {
   background-color: white;
 }
 
-.next-button {
-  width: 100px;
+.button {
   height: 30px;
   font-size: 18px;
 }
