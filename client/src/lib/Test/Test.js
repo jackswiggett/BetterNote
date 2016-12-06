@@ -84,14 +84,18 @@ class StartPage extends Component {
 
     return (
       <div className="test-start-page" style={style}>
-        <div className="tester-name">
-          Name of tester:
-          <input
-            id="tester-name-input"
-            type="text"
-            value={this.props.testerName}
-            onChange={this.props.onChange} />
-        </div>
+        {
+        this.props.showNameInput ?
+          <div className="tester-name">
+            Name of tester:
+            <input
+              id="tester-name-input"
+              type="text"
+              value={this.props.testerName}
+              onChange={this.props.onChange} />
+          </div> :
+          null
+        }
         <div className="notation-placeholder">
           Music notation will appear here <br/>
           when you click "Begin Test"
@@ -112,12 +116,15 @@ class Test extends Component {
    *   maxDuration: Once this duration (in seconds) has elapsed, the test
    *                will exit with "Next" is pressed, regardless of whether
    *                the tester has finished identifying all the chords
+   *   practice:    This is a practice test; show the answers once the user
+   *                has selected all the notes of the chord
    */
   constructor() {
     super();
     this.state = {
       currentChordIndex: 0,
       highlightedNotes: [],
+      correctNotesMarked: [],
       canPlayNotes: false,
       testStarted: false,
       testerName: ""
@@ -155,7 +162,8 @@ class Test extends Component {
       if (playedNotes.length === correctChord.notes.length) {
         // user has finished playing notes for this chord
         this.setState({
-          canPlayNotes: false
+          canPlayNotes: false,
+          correctNotesMarked: this.props.practice ? correctChord.notes : []
         });
       }
     }
@@ -171,7 +179,8 @@ class Test extends Component {
       const index = this.state.currentChordIndex + 1;
       const totalTestingTime = (performance.now() - this.state.startTime) / 1000;
       if (index === this.props.chordSequence.length ||
-          totalTestingTime > this.props.maxDuration) {
+          (this.props.maxTestDuration &&
+           totalTestingTime > this.props.maxDuration)) {
         // done with the test; send test log to parent component
         this.props.testCompleted(this.testLog.getData());
       } else {
@@ -180,6 +189,7 @@ class Test extends Component {
         this.setState({
           currentChordIndex: index,
           highlightedNotes: [],
+          correctNotesMarked: [],
           canPlayNotes: true
         });
 
@@ -203,11 +213,13 @@ class Test extends Component {
             width={400}
             height={300}
             testerName={this.props.testerName}
-            onChange={(event) => this.testerNameChanged(event)} />
+            onChange={(event) => this.testerNameChanged(event)}
+            showNameInput={!this.props.practice} />
         }
         <Keyboard
           notePlayed={(note) => this.notePlayed(note)}
-          highlightedNotes={this.state.highlightedNotes} />
+          highlightedNotes={this.state.highlightedNotes}
+          correctNotesMarked={this.state.correctNotesMarked} />
         {
         this.state.testStarted ?
           <NextButton
@@ -215,7 +227,7 @@ class Test extends Component {
             disabled={this.state.canPlayNotes} /> :
           <StartButton
             onClick={() => this.startTest()}
-            disabled={!this.state.testerName} />
+            disabled={!(this.state.testerName || this.props.practice)} />
         }
       </div>
     );

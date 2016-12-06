@@ -8,9 +8,31 @@ const hasFlat = [false, true, true, false, true, true, true];
 class Note {
   constructor(noteName, octave, state="natural") {
     /* noteName: any of the values in noteNames (defined above)
-     * octave: any integer >= 0
+     * octave: any integer between 0 and 9
      * state: "natural", "sharp", or "flat"
+     *
+     * Alternatively, octave and state can be ommitted, and noteName
+     * passed in the form "C4", "Bb5", "A#5", etc.
      */
+    if (!octave) {
+      const fullNoteName = noteName;
+      noteName = fullNoteName[0];
+      if (isNaN(fullNoteName[1])) {
+        switch (fullNoteName[1]) {
+          case "#":
+            state="sharp"
+            break;
+          case "b":
+            state="flat"
+            break;
+          default:
+            throw new Error("Invalid accidental " + fullNoteName[1]);
+        }
+        octave = +fullNoteName[2];
+      } else {
+        octave = +fullNoteName[1];
+      }
+    }
 
     // check that the note name is valid
     if (!noteNames.includes(noteName)) {
@@ -19,9 +41,9 @@ class Note {
     }
 
     // check that the octave is valid
-    if (octave < 0) {
+    if (octave < 0 || octave > 9) {
       throw new Error("Attempt to create a note in octave " + octave + ". " +
-                      "Octave cannot be negative.");
+                      "Octave must be between 0 and 9.");
     }
 
     // check that the state is valid
@@ -41,6 +63,8 @@ class Note {
     this.octave = octave;
     this.state = state;
   }
+
+
 
   standardized() {
     /* Returns a copy of this note. If this note is a flat, the copy will be the equivalent
@@ -101,7 +125,12 @@ class Note {
 
 class Chord {
   constructor(notes) {
-    this.notes = notes;
+    if (typeof notes === 'string') {
+      notes = notes.match(/\S+/g) || []
+      this.notes = notes.map((noteName) => new Note(noteName));
+    } else {
+      this.notes = notes;
+    }
   }
 
   describe() {

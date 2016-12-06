@@ -1,24 +1,18 @@
-import {
-  Note,
-  Chord
-} from '../../lib';
+import { Chord } from '../../lib';
 
 const chordSequence = [
-  new Chord([
-    new Note("E", 4, "flat"),
-    new Note("F", 4),
-    new Note("G", 4, "flat")
-  ]),
-  new Chord([
-    new Note("C", 4),
-    new Note("F", 4),
-    new Note("A", 4)
-  ]),
-  new Chord([
-    new Note("G", 4),
-    new Note("C", 5),
-    new Note("E", 5, "flat")
-  ]),
+  new Chord("G#4 C#5 E5"),
+  new Chord("Ab4 C5 F5"),
+  new Chord("E4 G#4 C#5"),
+  new Chord("F#4 B4 D#5"),
+  new Chord("F4 Bb4 D5"),
+  new Chord("G4 B4 E5"),
+  new Chord("A4 C5 E5"),
+  new Chord("G4 C5 E5"),
+  new Chord("A4 D5 F5"),
+  new Chord("G#4 B4 D#5"),
+  new Chord("G4 Bb4 D5"),
+  new Chord("F4 A4 C5"),
 ];
 
 export default chordSequence;

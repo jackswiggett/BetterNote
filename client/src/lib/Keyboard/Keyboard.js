@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Note } from '../Note';
+import './Keyboard.css';
 
 /* Modify these properties to change the appearance of the keyboard */
 const keyboardProps = {
@@ -99,37 +100,52 @@ class Keyboard extends Component {
     this.props.notePlayed(note);
   }
 
+  noteIsHighlighted(note) {
+    for (let highlightedNote of this.props.highlightedNotes) {
+      if (note.equals(highlightedNote, true)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  noteIsMarkedCorrect(note) {
+    for (let markedNote of this.props.correctNotesMarked) {
+      if (note.equals(markedNote)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   render() {
     const whiteKeys = this.whiteKeys.slice();
     const blackKeys = this.blackKeys.slice();
 
-    // Highlight keys corresponding to the notes in props.highlightedNotes
-    for (var i = 0; i < this.props.highlightedNotes.length; i++) {
-      const note = this.props.highlightedNotes[i];
-      if (note.state === "natural") {
-        // this highlighted key is white
-        const index = this.whiteNotes.indexOf(note);
-        whiteKeys[index] = (
-          <Key
-            type="white-key"
-            xPos={whiteKeys[index].props.xPos}
-            key={index} // required by React
-            index={index}
-            highlighted={true}
-            onClick={() => false} /> // do nothing when a highlighted key is clicked
-        );
-      } else {
-        // this highlighted key is black
-        const index = this.blackNotes.indexOf(note);
-        blackKeys[index] = (
-          <Key
-            type="black-key"
-            xPos={blackKeys[index].props.xPos}
-            key={index}
-            index={index}
-            highlighted={true}
-            onClick={() => false} /> // do nothing when a highlighted key is clicked
-        );
+    for (let noteSet of [this.whiteNotes, this.blackNotes]) {
+
+      for (let index = 0; index < noteSet.length; index++) {
+        const note = noteSet[index];
+        if (note === null) {
+          continue;
+        }
+        const isHighlighted = this.noteIsHighlighted(note);
+        const isMarkedCorrect = this.noteIsMarkedCorrect(note);
+
+        if (isHighlighted || isMarkedCorrect) {
+          const keySet = (noteSet === this.whiteNotes) ? whiteKeys : blackKeys;
+          keySet[index] = (
+            <Key
+              type={(noteSet === this.whiteNotes) ? "white-key" : "black-key"}
+              xPos={keySet[index].props.xPos}
+              key={index}
+              index={index}
+              highlighted={isHighlighted}
+              markedCorrect={isMarkedCorrect}
+              onClick={() => false} /> // do nothing when a marked key is clicked
+          );
+        }
+
       }
     }
 
@@ -147,6 +163,7 @@ function Key(props) {
    *   type: "white-key" or "black-key"
    *   xPos: x-position at which to render the left edge of the key
    *   highlighted: true if the key should be higlighted, false or undefined otherwise
+   *   markedCorrect: true if the key should be marked as a correct note, false or undefined otherwise
    *   index: index of this key, starting with 0 at the left of the keyboard. Black and
    *          white keys are separately indexed.
    */
@@ -165,7 +182,12 @@ function Key(props) {
   }
 
   return (
-    <div className={props.type} style={style} onClick={onClick}></div>
+    <div className={props.type} style={style} onClick={onClick}>
+    {props.markedCorrect ?
+      <div className="key-marked-correct" onClick={onClick}></div> :
+      null
+    }
+    </div>
   )
 }
 

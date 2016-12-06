@@ -34,7 +34,7 @@ function render(chord, documentElement) {
   const keys = chord.notes.map(function(note) {
     return note.noteName + "/" + note.octave;
   });
-  const vfChord = new VF.StaveNote({clef: "treble", keys: keys, duration: "q" });
+  const vfChord = new VF.StaveNote({clef: "treble", keys: keys, duration: "q", auto_stem: true});
 
   // Add accidentals
   for (let i = 0; i < numNotes; i++) {

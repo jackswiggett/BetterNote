@@ -6,28 +6,6 @@ body {
   box-sizing: border-box;
 }
 
-.keyboard {
-  position: relative;
-  margin: 30px auto;
-}
-
-.black-key,
-.white-key
-{
-  position: absolute;
-  top: 0px;
-  border: 1px solid black;
-}
-
-.black-key {
-  background-color: black;
-  z-index: 1;
-}
-
-.white-key {
-  background-color: white;
-}
-
 .button {
   height: 30px;
   font-size: 18px;

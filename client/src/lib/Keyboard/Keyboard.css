@@ -1,0 +1,32 @@
+.keyboard {
+  position: relative;
+  margin: 30px auto;
+}
+
+.black-key,
+.white-key
+{
+  position: absolute;
+  top: 0px;
+  border: 1px solid black;
+}
+
+.black-key {
+  background-color: black;
+  z-index: 1;
+}
+
+.white-key {
+  background-color: white;
+}
+
+.key-marked-correct {
+  position: absolute;
+  width: 70%;
+  height: 28%;
+  background-color: #42f44e;
+  top: 65%;
+  left: 15%;
+  border: 1px solid black;
+  box-sizing: border-box;
+}

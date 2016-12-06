@@ -55,6 +55,7 @@ app.get('/api/test-logs', function (req, res) {
 
 app.post('/api/test-logs', function (req, res) {
   const collection = db.collection("test-logs");
+  console.log("POST request:")
   console.log(req.body);
   collection.insertOne(req.body, function (err, result) {
     if (err) {
@@ -63,8 +64,7 @@ app.post('/api/test-logs', function (req, res) {
         error: "Unable to insert test log into database."
       });
     } else {
-      console.log("Saved new test log:");
-      console.log(req.body);
+      console.log("Successfully saved new test log.");
       res.status(201).end("Test log successfully saved in database.");
     }
   });

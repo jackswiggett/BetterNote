@@ -11,6 +11,12 @@
   margin: 15px;
 }
 
+.button.next-button {
+  height: 50px;
+  width: 150px;
+  font-size: 24px;
+}
+
 #tester-name-input {
   font-size: inherit;
   margin: 5px;
