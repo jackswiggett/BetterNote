@@ -1,0 +1,16 @@
+.test-result {
+  width: 600px;
+  margin: 15px auto;
+  border: 1px solid;
+  background-color: #eeeeee;
+  font-size: 14px;
+}
+
+.log-time-range {
+  font-size: 10px;
+}
+
+.test-result div {
+  display: inline-block;
+  margin: 5px;
+}

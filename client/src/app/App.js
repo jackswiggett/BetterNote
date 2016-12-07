@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
-import { Test } from '../lib';
+import {
+  NavBar,
+  Test,
+  TestResults
+} from '../lib';
 import './App.css';
 import {
   oneNotePractice,
@@ -11,7 +15,15 @@ import {
   threeNoteTest
 } from './chord_sequences';
 
-const maxTestDuration = 210; // tests will end after 210 seconds (3.5 minutes)
+const maxTestDuration = 150; // tests will end after 150 seconds (2.5 minutes)
+
+// this object emulates an enum in other languages; its values are used
+// to control the 
+const AppViews = Object.freeze({
+  HOME: "home",
+  TEST: "test",
+  TEST_RESULTS: "test-results"
+});
 
 class TestSelector extends Component {
   onClick(practice=false) {
@@ -88,7 +100,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      testInProgress: false,
+      view: AppViews.HOME,
       notationRenderer: null,
       chordSequence: null,
       testLogSavedAttempt: false,
@@ -100,7 +112,7 @@ class App extends Component {
   testCompleted(data) {
     console.log(data);
     this.setState({
-      testInProgress: false,
+      view: AppViews.HOME,
       notationRenderer: null,
       chordSequence: null
     });
@@ -147,36 +159,69 @@ class App extends Component {
 
   startTest(notation, sequence, practice=false) {
     this.setState({
-      testInProgress: true,
+      view: AppViews.TEST,
       practiceTest: practice,
       notationRenderer: notation,
       chordSequence: sequence
     });
   }
 
+  createNavBarPages() {
+    const pages = [
+      {
+        name: "Create Test",
+        active: this.state.view === AppViews.HOME,
+        onClick: () => this.setState({view: AppViews.HOME})
+      },
+      {
+        name: "View Results",
+        active: this.state.view === AppViews.TEST_RESULTS,
+        onClick: () => this.setState({view: AppViews.TEST_RESULTS})
+      }
+    ];
+
+    return pages;
+  }
+
   render() {
-    if (this.state.testInProgress) {
-      // display the current test
-      return (
-        <Test
-          chordSequence={this.state.chordSequence}
-          notationRenderer={this.state.notationRenderer}
-          testCompleted={(data) => this.testCompleted(data)}
-          maxDuration={this.state.practiceTest ? null : maxTestDuration}
-          practice={this.state.practiceTest} />
-      );
-    } else {
-      // let the user begin a test
-      return (
-        <div>
-          <h1>Create A New Test</h1>
-          <TestSelector
-            onClick={(n, s, p) => this.startTest(n, s, p)} />
-          <TestLogSavedMessage
-            visible={this.state.testLogSavedAttempt}
-            success={this.state.testLogSavedSuccess} />
-        </div>
-      );
+    switch (this.state.view) {
+      case AppViews.HOME:
+        // let the user begin a test
+        return (
+          <div>
+            <NavBar pages={this.createNavBarPages()} />
+            <h1>Create A New Test</h1>
+            <TestSelector
+              onClick={(n, s, p) => this.startTest(n, s, p)} />
+            <TestLogSavedMessage
+              visible={this.state.testLogSavedAttempt}
+              success={this.state.testLogSavedSuccess} />
+          </div>
+        );
+      case AppViews.TEST:
+        // display the test that is currently in progress
+        return (
+          <Test
+            chordSequence={this.state.chordSequence}
+            notationRenderer={this.state.notationRenderer}
+            testCompleted={(data) => this.testCompleted(data)}
+            maxDuration={this.state.practiceTest ? null : maxTestDuration}
+            practice={this.state.practiceTest} />
+        );
+      case AppViews.TEST_RESULTS:
+        // dispay test results
+        return (
+          <div>
+            <NavBar pages={this.createNavBarPages()} />
+            <TestResults />
+          </div>
+        );
+      default:
+        return (
+          <p>
+            Application error: view {this.state.view} is invalid.
+          </p>
+        );
     }
   }
 }

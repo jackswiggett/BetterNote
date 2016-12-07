@@ -28,11 +28,13 @@ function StartButton(props) {
 }
 
 class TestLog {
-  constructor(testerName) {
+  constructor(testerName, notationRenderer, maxDuration) {
     const date = new Date();
     this.sequence = [];
     this.startTime = date.toLocaleDateString() + " " + date.toLocaleTimeString();
     this.testerName = testerName;
+    this.notation = notationRenderer;
+    this.maxDuration = maxDuration;
   }
 
   logChord(chord, played, elapsedTime) {
@@ -70,7 +72,9 @@ class TestLog {
       testerName: this.testerName,
       sequence: this.sequence,
       startTime: this.startTime,
-      endTime: date.toLocaleDateString() + " " + date.toLocaleTimeString()
+      endTime: date.toLocaleDateString() + " " + date.toLocaleTimeString(),
+      notation: this.notation,
+      maxDuration: this.maxDuration
     };
   }
 }
@@ -85,7 +89,8 @@ class StartPage extends Component {
     return (
       <div className="test-start-page" style={style}>
         {
-        this.props.showNameInput ?
+        this.props.practice ?
+          null :
           <div className="tester-name">
             Name of tester:
             <input
@@ -93,12 +98,20 @@ class StartPage extends Component {
               type="text"
               value={this.props.testerName}
               onChange={this.props.onChange} />
-          </div> :
-          null
+          </div>
         }
         <div className="notation-placeholder">
           Music notation will appear here <br/>
-          when you click "Begin Test"
+          when you click "Begin Test."
+          {
+          this.props.practice ?
+            null :
+            <span>
+            <br/><br/>
+            Try to go as quickly as you can <br/>
+            while still being accurate.
+            </span>
+          }
         </div>
       </div>
     );
@@ -138,7 +151,9 @@ class Test extends Component {
   }
 
   startTest() {
-    this.testLog = new TestLog(this.state.testerName);
+    this.testLog = new TestLog(this.state.testerName,
+                               this.props.notationRenderer,
+                               this.props.maxDuration);
     this.setState({
       testStarted: true,
       canPlayNotes: true,
@@ -179,7 +194,7 @@ class Test extends Component {
       const index = this.state.currentChordIndex + 1;
       const totalTestingTime = (performance.now() - this.state.startTime) / 1000;
       if (index === this.props.chordSequence.length ||
-          (this.props.maxTestDuration &&
+          (this.props.maxDuration &&
            totalTestingTime > this.props.maxDuration)) {
         // done with the test; send test log to parent component
         this.props.testCompleted(this.testLog.getData());
@@ -214,7 +229,7 @@ class Test extends Component {
             height={300}
             testerName={this.props.testerName}
             onChange={(event) => this.testerNameChanged(event)}
-            showNameInput={!this.props.practice} />
+            practice={this.props.practice} />
         }
         <Keyboard
           notePlayed={(note) => this.notePlayed(note)}

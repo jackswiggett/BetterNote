@@ -1,6 +1,8 @@
 import Keyboard from './Keyboard';
 import Notation from './Notation';
 import Test from './Test';
+import TestResults from './TestResults';
+import NavBar from './NavBar';
 import {
   Note,
   Chord
@@ -10,6 +12,8 @@ export {
   Keyboard,
   Notation,
   Test,
+  TestResults,
   Note,
-  Chord
+  Chord,
+  NavBar
 };
