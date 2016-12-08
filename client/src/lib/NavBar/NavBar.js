@@ -10,11 +10,13 @@ class NavBar extends Component {
    */
   createLinks() {
     const links = [];
-    for (let page of this.props.pages) {
+    const pages = this.props.pages;
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i];
       const className = page.active ? "nav-link active" : "nav-link";
 
       links.push(
-        <li className={className} onClick={page.onClick}>
+        <li className={className} onClick={page.onClick} key={i}>
           {page.name}
         </li>
       );

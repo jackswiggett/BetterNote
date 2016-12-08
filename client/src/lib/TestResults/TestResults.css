@@ -10,7 +10,31 @@
   font-size: 10px;
 }
 
-.test-result div {
+.test-result-left-panel,
+.test-result-right-panel {
+  width: 50%;
   display: inline-block;
-  margin: 5px;
+  box-sizing: border-box;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.test-result-left-panel {
+  padding-left: 15px;
+  text-align: left;
+}
+
+.test-result-right-panel {
+  padding-right: 15px;
+  text-align: right;
+}
+
+.test-result-left-panel div,
+.test-result-right-panel div {
+  display: block;
+  margin: 5px 0;
+}
+
+.search-and-filter-results div {
+  margin: 10px;
 }

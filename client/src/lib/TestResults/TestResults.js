@@ -8,6 +8,67 @@ const LoadStatus = Object.freeze({
   LOAD_FAILURE: "load-failure"
 });
 
+function SearchAndFilter(props) {
+  return (
+    <form className="search-and-filter-results">
+      <div>
+        Tester name:&emsp;
+        <input
+          type="text"
+          value={props.searchQuery}
+          onChange={props.searchQueryChanged} />
+      </div>
+      <div id="notation-filter">
+        Notation style:&emsp;
+        <label>
+          <input
+            type="checkbox"
+            value="klavar"
+            checked={props.showKlavar}
+            onChange={props.showKlavarChanged} />
+          Klavar
+        </label>
+        &emsp;
+        <label>
+          <input
+            type="checkbox"
+            value="traditional"
+            checked={props.showTraditional}
+            onChange={props.showTraditionalChanged} />
+          Traditional
+        </label>
+      </div>
+      <div id="num-notes-filter">
+        Number of notes:&emsp;
+        <label>
+          <input
+            type="checkbox"
+            value="one-note"
+            checked={props.showOneNote}
+            onChange={props.showOneNoteChanged} />
+          1&emsp;
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            value="two-note"
+            checked={props.showTwoNotes}
+            onChange={props.showTwoNotesChanged} />
+          2&emsp;
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            value="three-note"
+            checked={props.showThreeNotes}
+            onChange={props.showThreeNotesChanged} />
+          3&emsp;
+        </label>
+      </div>
+    </form>
+  );
+}
+
 class TestResult extends Component {
   /* props:
    *   testLog */
@@ -47,11 +108,16 @@ class TestResult extends Component {
     const log = this.props.testLog;
     return (
       <div className="test-result">
-        <div>{log.testerName}</div>
-        <div>Notation style: {log.notation}</div><br/>
-        <div>Overall accuracy: {this.calculateOverallAccuracy(log)}%</div>
-        <div>Median elapsed time: {this.calculateMedianElapsedTime(log)} seconds</div><br/>
-        <div className="log-time-range">{log.startTime} - {log.endTime}</div>
+        <div className="test-result-left-panel">
+          <div>Tester name: {log.testerName}</div>
+          <div>Notation style: {log.notation}</div>
+          <div>Number of notes: {log.sequence && log.sequence[0].numNotesPlayed}</div>
+        </div>
+        <div className="test-result-right-panel">
+          <div>Overall accuracy: {this.calculateOverallAccuracy(log)}%</div>
+          <div>Median elapsed time: {this.calculateMedianElapsedTime(log)} seconds</div>
+          <div className="log-time-range">{log.startTime} - {log.endTime}</div>
+        </div>
       </div>
     );
   }
@@ -62,7 +128,13 @@ class TestResults extends Component {
     super();
     this.state = {
       loadStatus: LoadStatus.LOADING,
-      testLogs: []
+      testLogs: [],
+      searchQuery: "",
+      showKlavar: true,
+      showTraditional: true,
+      showOneNote: true,
+      showTwoNotes: true,
+      showThreeNotes: true
     };
   }
 
@@ -103,13 +175,50 @@ class TestResults extends Component {
 
   createTestResults() {
     const testResults = [];
+    const searchQueries = this.state.searchQuery.toLowerCase().split(" ");
 
     const logs = this.state.testLogs;
     for (let i = logs.length - 1; i >= 0; i--) {
-      testResults.push(<TestResult testLog={logs[i]} />);
+      let testerName = logs[i].testerName;
+      const sequence = logs[i].sequence;
+      const notation = logs[i].notation;
+
+      if (testerName && sequence) {
+        testerName = testerName.toLowerCase();
+        const numNotes = sequence[0].numNotesPlayed;
+        let showResult = true;
+        for (let query of searchQueries) {
+          if (!testerName.includes(query) ||
+              (!this.state.showKlavar && notation === "klavar") ||
+              (!this.state.showTraditional && notation === "traditional") ||
+              (!this.state.showOneNote && numNotes === 1) ||
+              (!this.state.showTwoNotes && numNotes === 2) ||
+              (!this.state.showThreeNotes && numNotes === 3)) {
+            showResult = false;
+            break;
+          }
+        }
+
+        if (showResult) {
+          testResults.push(<TestResult testLog={logs[i]} key={i} />);
+        }
+      }
     }
 
     return testResults;
+  }
+
+  searchQueryChanged(event) {
+    this.setState({
+      searchQuery: event.target.value
+    });
+  }
+
+  filterChanged(event, filter) {
+    console.log(filter, event.target.checked);
+    const newState = {};
+    newState[filter] = event.target.checked;
+    this.setState(newState);
   }
 
   render() {
@@ -119,6 +228,19 @@ class TestResults extends Component {
       case LoadStatus.LOAD_SUCCESS:
         return (
           <div>
+            <SearchAndFilter
+              searchQuery={this.state.searchQuery}
+              searchQueryChanged={(event) => this.searchQueryChanged(event)}
+              showKlavar={this.state.showKlavar}
+              showKlavarChanged={(event) => this.filterChanged(event, "showKlavar")}
+              showTraditional={this.state.showTraditional}
+              showTraditionalChanged={(event) => this.filterChanged(event, "showTraditional")}
+              showOneNote={this.state.showOneNote}
+              showOneNoteChanged={(event) => this.filterChanged(event, "showOneNote")}
+              showTwoNotes={this.state.showTwoNotes}
+              showTwoNotesChanged={(event) => this.filterChanged(event, "showTwoNotes")}
+              showThreeNotes={this.state.showThreeNotes}
+              showThreeNotesChanged={(event) => this.filterChanged(event, "showThreeNotes")} />
             {this.createTestResults()}
           </div>
         );
