@@ -9,7 +9,7 @@ const MongoClient = require('mongodb').MongoClient
 // Connect to mongodb server
 let db;
 
-const url = 'mongodb://localhost:27017/notation-test';
+const url = 'mongodb://localhost:27017/betternote';
 MongoClient.connect(url, function(err, database) {
   if (err) {
     console.log(err);

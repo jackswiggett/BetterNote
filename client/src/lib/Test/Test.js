@@ -239,11 +239,18 @@ class Test extends Component {
         this.state.testStarted ?
           <NextButton
             onClick={() => this.nextChord()}
-            disabled={this.state.canPlayNotes} /> :
+            disabled={this.state.canPlayNotes} />
+          :
           <StartButton
             onClick={() => this.startTest()}
             disabled={!(this.state.testerName || this.props.practice)} />
         }
+        &emsp;&emsp;&emsp;
+        <button
+          className="button start-button"
+          onClick={()=>location.reload()}>
+          Cancel Test
+        </button>
       </div>
     );
   }
