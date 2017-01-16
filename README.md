@@ -1,6 +1,9 @@
+# BetterNote
 BetterNote is a tool for assessing alternative music notation systems (i.e. any system other than traditional, Western music notation). It allows users to run sight-reading tests using different notation systems, and records reading speed and accuracy. It logs these results in a database, and permits searching and filtering results on the "Test Results" page.
 
 BetterNote is built with Node.js and React.js, and communicates with MongoDB to store data. It currently supports testing of traditional music notation and [Klavarskribo](https://en.wikipedia.org/wiki/Klavarskribo).
+
+To learn more about BetterNote and view initial research results, read the [research paper](http://jackswiggett.com/pdf/betternote-report.pdf).
 
 ## Installation
 
